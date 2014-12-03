@@ -124,7 +124,38 @@ public class Main extends Application {
 		
 		// Create the dialog Stage.
 		Stage dialogStage = new Stage();
-		dialogStage.setTitle("Add/Edit Vinyl Record");
+		dialogStage.setTitle("Add Vinyl Record");
+		dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(primaryStage);
+        Scene scene = new Scene(page);
+        dialogStage.setScene(scene);
+        
+        // Set the Record into the controller.
+        RecordEditDialogController controller = loader.getController();
+        controller.setDialogStage(dialogStage);
+        controller.setVinylRecord(vinylRecord);
+        
+        // Show the dialog and wait until the user closes it
+        dialogStage.showAndWait();
+        
+        return controller.isOkClicked();
+              
+		}catch(IOException e){
+			e.printStackTrace();
+			return false;
+		}	
+	}
+	public boolean showTestRecordEditDialog(VinylRecords vinylRecord){
+		
+		try{
+		// Load the fxml file and create a new stage for the popup dialog.
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(Main.class.getResource("view/TestRecordEditDialog.fxml"));
+		AnchorPane page = (AnchorPane) loader.load();
+		
+		// Create the dialog Stage.
+		Stage dialogStage = new Stage();
+		dialogStage.setTitle("Edit Vinyl Record");
 		dialogStage.initModality(Modality.WINDOW_MODAL);
         dialogStage.initOwner(primaryStage);
         Scene scene = new Scene(page);

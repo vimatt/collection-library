@@ -1,9 +1,14 @@
 package se.nackademin.address.view;
 
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
@@ -18,11 +23,8 @@ public class RecordEditDialogController {
 	
 
 
-	/**
-	 * Dialog to edit details of a person.
-	 * 
-	 * @author Marco Jakob
-	 */
+		//Dialog to edit details of a person.
+	
 	    @FXML
 	    private TextField albumField;
 	    @FXML
@@ -48,7 +50,7 @@ public class RecordEditDialogController {
 	    public void setDialogStage(Stage dialogStage) {
 	        this.dialogStage = dialogStage;
 	    }
-
+	    
 
 	    //Sets the record to be edited in the dialog.	    
 	    public void setVinylRecord(VinylRecords vinylRecord) {
@@ -73,11 +75,8 @@ public class RecordEditDialogController {
             FileWriter fileWriter = null;
 			try {
 				fileWriter = new FileWriter(fileName,true);
-
-
 	            // Always wrap FileWriter in BufferedWriter.
-	            BufferedWriter bufferedWriter =
-	                new BufferedWriter(fileWriter);
+	            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 	            
 	            bufferedWriter.write(albumField.getText()+";");
 	            bufferedWriter.write(artistField.getText()+";");
@@ -85,8 +84,84 @@ public class RecordEditDialogController {
 	            bufferedWriter.write(releaseYearField.getText()+";");
 	            bufferedWriter.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}
+	        if (isInputValid()) {
+	            vinylRecord.setAlbum(albumField.getText());
+	            vinylRecord.setArtist(artistField.getText());
+	            vinylRecord.setRecordLabel(recordLabelField.getText());
+	            vinylRecord.setReleaseYear(releaseYearField.getText());
+	         
+	            okClicked = true;
+	            dialogStage.close();
+	        }
+	    }
+	    @FXML
+	    private void handleOkEdit() throws IOException {
+	    	//Save the fields in temporary variables
+	    	
+	    	String tempAlbum = albumField.getText();
+	    	String tempArtist = artistField.getText();
+	    	String tempRecord = recordLabelField.getText();
+	    	String tempRelease = releaseYearField.getText();
+			String filename = "records.txt";
+			Scanner s = null;
+			try{
+				s =  new Scanner(new BufferedReader(new FileReader(filename)));
+				s.useDelimiter(";");
+				String line;
+				ArrayList<String>list = new ArrayList<String>();
+				int cnt = 0;
+				String fileName = "records.tmp";
+			
+				FileWriter fileWriter = new FileWriter(fileName);
+				BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+				while(s.hasNext()){
+					line = s.next();
+					list.add(line);
+					cnt++;
+					if(cnt == 4){
+//						VinylRecords v = tableID.getItems().get(selectedIndex);
+						if(list.get(0).equals(VinylRecordController.album) && list.get(1).equals(VinylRecordController.artist) && list.get(2).equals(VinylRecordController.recordlabel) && list.get(3).equals(VinylRecordController.release)){
+							try {
+								//Save the temporary variables over the old text                       	            
+								bufferedWriter.write(tempAlbum+";");
+								bufferedWriter.write(tempArtist+";");
+								bufferedWriter.write(tempRecord+";");
+								bufferedWriter.write(tempRelease+";");
+
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+	
+						} else {
+
+							try {
+								// Always wrap FileWriter in BufferedWriter.                          	            
+								bufferedWriter.write(list.get(0)+";");
+								bufferedWriter.write(list.get(1)+";");
+								bufferedWriter.write(list.get(2)+";");
+								bufferedWriter.write(list.get(3)+";");
+
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+						cnt = 0;
+						list.clear();
+					}             
+				}
+				bufferedWriter.close();			
+			}
+			finally{
+			
+				if(s != null){    				
+					s.close();
+					File file = new File(filename);
+					file.delete();
+					File newfile = new File("records.tmp");
+					newfile.renameTo(new File("records.txt"));
+				}
 			}
 	        if (isInputValid()) {
 	            vinylRecord.setAlbum(albumField.getText());

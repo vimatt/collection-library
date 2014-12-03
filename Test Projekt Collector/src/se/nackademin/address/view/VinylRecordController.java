@@ -33,7 +33,11 @@ public class VinylRecordController {
 	@FXML private Label artistLabel;
 	@FXML private Label recordLabelLabel;
 	@FXML private Label releaseYearLabel;
-
+	//static variables that can be reached from RecordEditDialogController
+	public static String album = null;
+	public static String artist = null;
+	public static String recordlabel = null;
+	public static String release = null;
 	//Define Table
 	@FXML TableView<VinylRecords> tableID;
 	@FXML TableColumn<VinylRecords, String> albumColumn;
@@ -44,7 +48,6 @@ public class VinylRecordController {
 	//Define ImageView
 	@FXML private ImageView albumCover;
 
-//	private Desktop desktop = Desktop.getDesktop(); 
 
 	private Main main;
 
@@ -81,6 +84,10 @@ public class VinylRecordController {
 			recordLabelLabel.setText(vinylRecord.getRecordLabel());
 			releaseYearLabel.setText(vinylRecord.getReleaseYear());	
 			albumCover.setImage(vinylRecord.getAlbumCover());
+			album = albumLabel.getText();
+			artist = artistLabel.getText();
+			recordlabel = recordLabelLabel.getText();
+			release = releaseYearLabel.getText();
 		}
 		else{
 			albumLabel.setText("");
@@ -99,12 +106,12 @@ public class VinylRecordController {
 			Scanner s = null;
 			try{
 				s =  new Scanner(new BufferedReader(new FileReader(filename)));
-				s.useDelimiter(";");//Decides which char that separates the input
+				s.useDelimiter(";");
 				String line;
 				ArrayList<String>list = new ArrayList<String>();
 				int cnt = 0;
 				String fileName = "records.tmp";
-				// Assume default encoding.
+			
 				FileWriter fileWriter = new FileWriter(fileName);
 				BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 				while(s.hasNext()){
@@ -171,7 +178,7 @@ public class VinylRecordController {
 	private void handleEditPerson() {
 		VinylRecords selectedRecord = tableID.getSelectionModel().getSelectedItem();
 		if (selectedRecord != null) {
-			boolean okClicked = main.showRecordEditDialog(selectedRecord);
+			boolean okClicked = main.showTestRecordEditDialog(selectedRecord);
 			if (okClicked) {
 				showVinylRecordDetails(selectedRecord);
 			}
@@ -182,13 +189,10 @@ public class VinylRecordController {
 
 		final FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Choose An Album Cover");
-		fileChooser.setInitialDirectory(
-				new File(System.getProperty("user.home"))
-				); 
+		fileChooser.setInitialDirectory(new File(System.getProperty("user.home"))); 
 		fileChooser.getExtensionFilters().addAll(
 				new FileChooser.ExtensionFilter("JPG", "*.jpg"),
-				new FileChooser.ExtensionFilter("PNG", "*.png")
-				);
+				new FileChooser.ExtensionFilter("PNG", "*.png"));
 		File file = fileChooser.showOpenDialog(null);
 
 		if (file != null) {
