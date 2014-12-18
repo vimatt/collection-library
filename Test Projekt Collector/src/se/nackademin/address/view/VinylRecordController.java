@@ -118,9 +118,11 @@ public class VinylRecordController {
 					line = s.next();
 					list.add(line);
 					cnt++;
-					if(cnt == 4){
+					if(cnt == 5){
 						VinylRecords v = tableID.getItems().get(selectedIndex);
-						if(list.get(0).equals(v.getAlbum()) && list.get(1).equals(v.getArtist()) && list.get(2).equals(v.getRecordLabel()) && list.get(3).equals(v.getReleaseYear())){
+						if(list.get(0).equals(v.getAlbum()) && list.get(1).equals(v.getArtist()) 
+						&& list.get(2).equals(v.getRecordLabel()) && list.get(3).equals(v.getReleaseYear()) 
+						&& list.get(4).equals("file:///" + v.getAlbumCoverString())){
 
 						} else {
 
@@ -130,6 +132,7 @@ public class VinylRecordController {
 								bufferedWriter.write(list.get(1)+";");
 								bufferedWriter.write(list.get(2)+";");
 								bufferedWriter.write(list.get(3)+";");
+								bufferedWriter.write(list.get(4)+";");
 
 							} catch (IOException e) {
 								e.printStackTrace();
@@ -200,7 +203,7 @@ public class VinylRecordController {
 				BufferedImage bufferedImage = ImageIO.read(file);
 				Image image = SwingFXUtils.toFXImage(bufferedImage, null);
 				albumCover.setImage(image);
-				//record.setAlbumCover(image);
+//				record.setAlbumCover(image);
 
 			} 
 			catch (IOException ex) {

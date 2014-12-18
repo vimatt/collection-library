@@ -43,7 +43,7 @@
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                  <children>
-                                    <GridPane layoutX="397.0" layoutY="28.0" prefHeight="244.0" prefWidth="405.0" AnchorPane.leftAnchor="397.0" AnchorPane.topAnchor="28.0">
+                                    <GridPane layoutX="312.0" layoutY="28.0" prefHeight="244.0" prefWidth="405.0" AnchorPane.leftAnchor="312.0" AnchorPane.topAnchor="28.0">
                                        <columnConstraints>
                                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="170.0" minWidth="10.0" prefWidth="159.0" />
                                           <ColumnConstraints hgrow="SOMETIMES" maxWidth="249.0" minWidth="10.0" prefWidth="190.0" />
@@ -88,15 +88,18 @@
                                           <Button layoutX="440.0" layoutY="244.0" mnemonicParsing="false" onAction="#handleDeleteRecord" prefWidth="100.0" text="Delete" />
                                        </children>
                                     </HBox>
-                                    <ImageView fx:id="albumCover" fitHeight="220.0" fitWidth="220.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="59.0" AnchorPane.leftAnchor="14.0">
-                                       <image>
-                                          <Image url="@../../../../../resources/images/default%20image.png" />
-                                       </image>
-                                       <viewport>
-                                          <Rectangle2D />
-                                       </viewport>
-                                    </ImageView>
-                                    <Button layoutX="150.0" layoutY="257.0" mnemonicParsing="false" onAction="#openFileChooser" text="Open File" AnchorPane.bottomAnchor="11.0" />
+                                    <StackPane layoutX="14.0" layoutY="10.0" style="-fx-padding: 5; -fx-background-color: rgba(0,164,198,57);">
+                                       <children>
+                                          <ImageView fx:id="albumCover" fitHeight="270.0" fitWidth="270.0" layoutX="14.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);;">
+                                             <image>
+                                                <Image url="@../../../../../resources/images/default%20image.png" />
+                                             </image>
+                                             <viewport>
+                                                <Rectangle2D />
+                                             </viewport>
+                                          </ImageView>
+                                       </children>
+                                    </StackPane>
                                  </children>
                               </AnchorPane>
                           </items>
