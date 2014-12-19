@@ -1,4 +1,5 @@
 package se.nackademin.address.view;
+import java.awt.Desktop;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -6,6 +7,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -75,16 +80,16 @@ public class VinylRecordController {
 		//Listen for selection changes and  show the record details when changed
 		tableID.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) 
 				-> showVinylRecordDetails(newValue));
-		
+
 		tableID.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
 				if(event.getButton().equals(MouseButton.PRIMARY)){
-		            if(event.getClickCount() == 2){
-		            	handleEditPerson();
-		            }
-		        }
+					if(event.getClickCount() == 2){
+						handleEditPerson();
+					}
+				}
 			}
 
 		});
@@ -96,7 +101,7 @@ public class VinylRecordController {
 
 		tableID.setItems(main.getVinylRecordData());
 	}
-	
+
 
 	private void showVinylRecordDetails(VinylRecords vinylRecord){
 		if(vinylRecord != null){
@@ -132,7 +137,7 @@ public class VinylRecordController {
 				ArrayList<String>list = new ArrayList<String>();
 				int cnt = 0;
 				String fileName = "records.tmp";
-			
+
 				FileWriter fileWriter = new FileWriter(fileName);
 				BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 				while(s.hasNext()){
@@ -142,8 +147,8 @@ public class VinylRecordController {
 					if(cnt == 5){
 						VinylRecords v = tableID.getItems().get(selectedIndex);
 						if(list.get(0).equals(v.getAlbum()) && list.get(1).equals(v.getArtist()) 
-						&& list.get(2).equals(v.getRecordLabel()) && list.get(3).equals(v.getReleaseYear()) 
-						&& list.get(4).equals("file:///" + v.getAlbumCoverString()) || list.get(4).equals("")){
+								&& list.get(2).equals(v.getRecordLabel()) && list.get(3).equals(v.getReleaseYear()) 
+								&& list.get(4).equals("file:///" + v.getAlbumCoverString()) || list.get(4).equals("")){
 
 						} else {
 
@@ -166,7 +171,7 @@ public class VinylRecordController {
 				bufferedWriter.close();			
 			}
 			finally{
-			
+
 				if(s != null){    				
 					s.close();
 					File file = new File(filename);
@@ -175,7 +180,7 @@ public class VinylRecordController {
 					newfile.renameTo(new File("records.txt"));
 				}
 			}
-			
+
 			tableID.getItems().remove(selectedIndex);
 		}
 		//If it's not a valid selection, i.e it's under 0 we show an error message
@@ -209,39 +214,19 @@ public class VinylRecordController {
 		}
 	}
 
-	public void openFileChooser(){
-
-		final FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Choose An Album Cover");
-		fileChooser.setInitialDirectory(new File(System.getProperty("user.home"))); 
-		fileChooser.getExtensionFilters().addAll(
-				new FileChooser.ExtensionFilter("JPG", "*.jpg"),
-				new FileChooser.ExtensionFilter("PNG", "*.png"));
-		File file = fileChooser.showOpenDialog(null);
-
-		if (file != null) {
-			try {
-				BufferedImage bufferedImage = ImageIO.read(file);
-				Image image = SwingFXUtils.toFXImage(bufferedImage, null);
-				albumCover.setImage(image);
-//				record.setAlbumCover(image);
-
-			} 
-			catch (IOException ex) {
-				Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);			
-			}	
+	@FXML
+	private void openWebpage() {
+		int selectedIndex = tableID.getSelectionModel().getSelectedIndex();
+		if(selectedIndex >= 0){
+			VinylRecords r = tableID.getItems().get(selectedIndex);
+			String album = r.getAlbum().replace(" ", "%20");
+			String artist = r.getArtist().replace(" ", "%20");
+			try 
+			{
+				Desktop.getDesktop().browse(new URL("http://www.allmusic.com/search/all/" + album + "%20" + artist).toURI());
+			}           
+			catch (Exception e) {}
 		}
 	}
-
-	//	private void openFile(File file) {
-	//		try {
-	//			desktop.open(file);
-	//		} catch (IOException ex) {
-	//			Logger.getLogger(
-	//					FileChooser.class.getName()).log(
-	//							Level.SEVERE, null, ex
-	//							);
-	//		}
-	//	}
 
 }
