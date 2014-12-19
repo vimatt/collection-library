@@ -10,17 +10,24 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.imageio.ImageIO;
+
 import org.controlsfx.dialog.Dialogs;
+
 import se.nackademin.address.Main;
 import se.nackademin.address.model.VinylRecords;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 
 
@@ -68,6 +75,19 @@ public class VinylRecordController {
 		//Listen for selection changes and  show the record details when changed
 		tableID.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) 
 				-> showVinylRecordDetails(newValue));
+		
+		tableID.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				if(event.getButton().equals(MouseButton.PRIMARY)){
+		            if(event.getClickCount() == 2){
+		            	handleEditPerson();
+		            }
+		        }
+			}
+
+		});
 	}
 
 
@@ -76,6 +96,7 @@ public class VinylRecordController {
 
 		tableID.setItems(main.getVinylRecordData());
 	}
+	
 
 	private void showVinylRecordDetails(VinylRecords vinylRecord){
 		if(vinylRecord != null){
@@ -122,7 +143,7 @@ public class VinylRecordController {
 						VinylRecords v = tableID.getItems().get(selectedIndex);
 						if(list.get(0).equals(v.getAlbum()) && list.get(1).equals(v.getArtist()) 
 						&& list.get(2).equals(v.getRecordLabel()) && list.get(3).equals(v.getReleaseYear()) 
-						&& list.get(4).equals("file:///" + v.getAlbumCoverString())){
+						&& list.get(4).equals("file:///" + v.getAlbumCoverString()) || list.get(4).equals("")){
 
 						} else {
 

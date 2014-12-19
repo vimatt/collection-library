@@ -85,6 +85,7 @@ public class VinylRecords {
 
 	public void setAlbumCover(String img){
 		if(img != null){
+			albumCoverString = img;
 			Image image = new Image("file:///" +img);
 			albumCover = image;
 		}

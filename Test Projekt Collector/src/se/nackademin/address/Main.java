@@ -45,8 +45,6 @@ public class Main extends Application {
     				cnt++;
                     if(cnt == 5){
                     	vinylRecordData.add(new VinylRecords(list.get(0),list.get(1),list.get(2),list.get(3), list.get(4)));
-//                    	if(list.get(4) != null)
-//                    		vinylRecord.setAlbumCover(albumCoverField.getText().replace("\\", "/"));
                     	cnt = 0;
                     	list.clear();
                     }
