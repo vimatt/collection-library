@@ -1,4 +1,5 @@
 package se.nackademin.address;
+import java.awt.image.ImageConsumer;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import se.nackademin.address.model.VinylRecords;
+import se.nackademin.address.view.ImageController;
 import se.nackademin.address.view.RecordEditDialogController;
 import se.nackademin.address.view.VinylRecordController;
 import javafx.application.Application;
@@ -15,6 +17,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -86,6 +89,7 @@ public class Main extends Application {
 
 				//Show the scene containing the root layout
 				Scene scene = new Scene(rootLayout);
+//				scene.getStylesheets().add("se/nackademin/address/application.css");
 				primaryStage.setScene(scene);
 				primaryStage.show();
 
@@ -114,7 +118,7 @@ public class Main extends Application {
 	}
 	
 	
-	public boolean showRecordEditDialog(VinylRecords vinylRecord){
+	public boolean showRecordAddDialog(VinylRecords vinylRecord){
 	
 		try{
 		// Load the fxml file and create a new stage for the popup dialog.
@@ -126,8 +130,10 @@ public class Main extends Application {
 		Stage dialogStage = new Stage();
 		dialogStage.setTitle("Add Vinyl Record");
 		dialogStage.initModality(Modality.WINDOW_MODAL);
+		dialogStage.setResizable(false);
         dialogStage.initOwner(primaryStage);
         Scene scene = new Scene(page);
+//        scene.getStylesheets().add("se/nackademin/address/application.css");
         dialogStage.setScene(scene);
         
         // Set the Record into the controller.
@@ -145,7 +151,7 @@ public class Main extends Application {
 			return false;
 		}	
 	}
-	public boolean showTestRecordEditDialog(VinylRecords vinylRecord){
+	public boolean showRecordEditDialog(VinylRecords vinylRecord){
 		
 		try{
 		// Load the fxml file and create a new stage for the popup dialog.
@@ -158,7 +164,9 @@ public class Main extends Application {
 		dialogStage.setTitle("Edit Vinyl Record");
 		dialogStage.initModality(Modality.WINDOW_MODAL);
         dialogStage.initOwner(primaryStage);
+        dialogStage.setResizable(false);
         Scene scene = new Scene(page);
+//        scene.getStylesheets().add("se/nackademin/address/application.css");
         dialogStage.setScene(scene);
         
         // Set the Record into the controller.
@@ -176,8 +184,6 @@ public class Main extends Application {
 			return false;
 		}	
 	}
-	
-	
 	public Stage getPrimaryStage(){
 		return primaryStage;
 	}

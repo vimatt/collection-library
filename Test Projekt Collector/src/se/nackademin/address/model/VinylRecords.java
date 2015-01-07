@@ -27,8 +27,10 @@ public class VinylRecords {
 			this.albumCover = new Image("file:///" + albumCover.replace("file:///", ""));
 			this.albumCoverString = albumCover.replace("file:///", "");
 		}
-		else
+		else{
 			this.albumCover = new Image("file:///C:/aVictor/git/eget-projekt-oop/Test Projekt Collector/resources/images/default image.png");
+			this.albumCoverString = "C:/aVictor/git/eget-projekt-oop/Test Projekt Collector/resources/images/default image.png";
+		}
 	}
 
 	public String getAlbum(){

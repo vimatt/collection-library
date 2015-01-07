@@ -13,7 +13,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import org.controlsfx.dialog.Dialogs;
+
 import se.nackademin.address.model.VinylRecords;
 @SuppressWarnings("deprecation")
 
@@ -31,7 +33,7 @@ public class RecordEditDialogController {
 	@FXML
 	private TextField albumCoverField;
 	@FXML
-	private Button browseAlbumCover;
+	private Button browseAlbumCover, okBtn;
 
 	private Stage dialogStage;
 	private VinylRecords vinylRecord;
@@ -43,6 +45,7 @@ public class RecordEditDialogController {
 	 */
 	@FXML
 	private void initialize() {
+
 	}
 
 	//Sets the stage of the dialog
@@ -156,6 +159,15 @@ public class RecordEditDialogController {
 								okClicked = true;
 								dialogStage.close();
 							}
+							//Tillfällig lösning på isinputvalid problemet
+							else{
+								bufferedWriter.write(list.get(0)+";");
+								bufferedWriter.write(list.get(1)+";");
+								bufferedWriter.write(list.get(2)+";");
+								bufferedWriter.write(list.get(3)+";");
+								bufferedWriter.write(list.get(4)+";");
+								dialogStage.close();
+							}
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -190,16 +202,6 @@ public class RecordEditDialogController {
 				newfile.renameTo(new File("records.txt"));
 			}
 		}
-		//		if (isInputValid()) {
-		//			vinylRecord.setAlbum(albumField.getText());
-		//			vinylRecord.setArtist(artistField.getText());
-		//			vinylRecord.setRecordLabel(recordLabelField.getText());
-		//			vinylRecord.setReleaseYear(releaseYearField.getText());
-		//			vinylRecord.setAlbumCover(albumCoverField.getText().replace("\\", "/"));
-		//
-		//			okClicked = true;
-		//			dialogStage.close();
-		//		}
 	}
 
 	//Method to choose a image file and set the textfile to it's location
@@ -262,6 +264,11 @@ public class RecordEditDialogController {
 			.showError();
 			return false;
 		}
+	}
+	
+	@FXML
+	private void clearBrowse(){
+		albumCoverField.clear();
 	}
 }
 
