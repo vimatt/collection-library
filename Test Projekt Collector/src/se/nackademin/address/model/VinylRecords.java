@@ -29,7 +29,7 @@ public class VinylRecords {
 		}
 		else{
 			this.albumCover = new Image("file:///C:/aVictor/git/eget-projekt-oop/Test Projekt Collector/resources/images/default image.png");
-			this.albumCoverString = "C:/aVictor/git/eget-projekt-oop/Test Projekt Collector/resources/images/default image.png";
+//			this.albumCoverString = "C:/aVictor/git/eget-projekt-oop/Test Projekt Collector/resources/images/default image.png";
 		}
 	}
 
@@ -86,7 +86,7 @@ public class VinylRecords {
 	}
 
 	public void setAlbumCover(String img){
-		if(img != null){
+		if(!img.equals("")){
 			albumCoverString = img;
 			Image image = new Image("file:///" +img);
 			albumCover = image;

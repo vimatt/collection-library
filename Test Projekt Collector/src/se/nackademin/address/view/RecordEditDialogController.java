@@ -22,37 +22,26 @@ import se.nackademin.address.model.VinylRecords;
 public class RecordEditDialogController {
 
 	//Dialog to edit details of a Record.
-	@FXML
-	private TextField albumField;
-	@FXML
-	private TextField artistField;
-	@FXML
-	private TextField recordLabelField;
-	@FXML
-	private TextField releaseYearField;
-	@FXML
-	private TextField albumCoverField;
-	@FXML
-	private Button browseAlbumCover, okBtn;
+	@FXML private TextField albumField;
+	@FXML private TextField artistField;
+	@FXML private TextField recordLabelField;
+	@FXML private TextField releaseYearField;
+	@FXML private TextField albumCoverField;
+	@FXML private Button browseAlbumCover, okBtn;
 
 	private Stage dialogStage;
 	private VinylRecords vinylRecord;
 	private boolean okClicked = false;
 
-	/**
-	 * Initializes the controller class. This method is automatically called
-	 * after the fxml file has been loaded.
-	 */
 	@FXML
 	private void initialize() {
-
+		
 	}
 
 	//Sets the stage of the dialog
 	public void setDialogStage(Stage dialogStage) {
 		this.dialogStage = dialogStage;
 	}
-
 
 	//Sets the record to be edited in the dialog.	    
 	public void setVinylRecord(VinylRecords vinylRecord) {
@@ -63,6 +52,7 @@ public class RecordEditDialogController {
 		recordLabelField.setText(vinylRecord.getRecordLabel());
 		releaseYearField.setText(vinylRecord.getReleaseYear());       
 		albumCoverField.setText(vinylRecord.getAlbumCoverString());
+		
 	}
 
 	//Returns true if the user clicked OK, false otherwise.	   
@@ -74,11 +64,10 @@ public class RecordEditDialogController {
 	@FXML
 	private void handleOk() {
 		String fileName = "records.txt";
-		// Assume default encoding.
 		FileWriter fileWriter = null;
 		try {
 			fileWriter = new FileWriter(fileName,true);
-			// Always wrap FileWriter in BufferedWriter.
+			
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 			if(isInputValid()){
 				bufferedWriter.write(albumField.getText() + ";");
@@ -101,7 +90,7 @@ public class RecordEditDialogController {
 					vinylRecord.setAlbumCover(albumCoverField.getText().replace("\\", "/"));
 				}
 				else{
-					vinylRecord.setAlbumCover(null);
+					vinylRecord.setAlbumCover("");
 				}
 
 				okClicked = true;
@@ -114,18 +103,18 @@ public class RecordEditDialogController {
 
 	@FXML
 	private void handleOkEdit() throws IOException {
+		
 		//Save the fields in temporary variables
-
 		String tempAlbum = albumField.getText();
 		String tempArtist = artistField.getText();
 		String tempRecord = recordLabelField.getText();
 		String tempRelease = releaseYearField.getText();
 		String tempCover = albumCoverField.getText();
 		String filename = "records.txt";
-		Scanner s = null;
+		Scanner sc = null;
 		try{
-			s =  new Scanner(new BufferedReader(new FileReader(filename)));
-			s.useDelimiter(";");
+			sc =  new Scanner(new BufferedReader(new FileReader(filename)));
+			sc.useDelimiter(";");
 			String line;
 			ArrayList<String>list = new ArrayList<String>();
 			int cnt = 0;
@@ -133,8 +122,8 @@ public class RecordEditDialogController {
 
 			FileWriter fileWriter = new FileWriter(fileName);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-			while(s.hasNext()){
-				line = s.next();
+			while(sc.hasNext()){
+				line = sc.next();
 				list.add(line);
 				cnt++;
 				if(cnt == 5){
@@ -148,7 +137,10 @@ public class RecordEditDialogController {
 								bufferedWriter.write(tempArtist+";");
 								bufferedWriter.write(tempRecord+";");
 								bufferedWriter.write(tempRelease+";");
-								bufferedWriter.write("file:///" + tempCover.replace("\\", "/") + ";");
+								if(tempCover.equals(""))
+									bufferedWriter.write(";");
+								else
+									bufferedWriter.write("file:///" + tempCover.replace("\\", "/") + ";");
 
 								vinylRecord.setAlbum(albumField.getText());
 								vinylRecord.setArtist(artistField.getText());
@@ -159,7 +151,7 @@ public class RecordEditDialogController {
 								okClicked = true;
 								dialogStage.close();
 							}
-							//Tillfällig lösning på isinputvalid problemet
+							//Temporary solution for the isvalid problem
 							else{
 								bufferedWriter.write(list.get(0)+";");
 								bufferedWriter.write(list.get(1)+";");
@@ -175,7 +167,6 @@ public class RecordEditDialogController {
 					} else {
 
 						try {
-							// Always wrap FileWriter in BufferedWriter.                          	            
 							bufferedWriter.write(list.get(0)+";");
 							bufferedWriter.write(list.get(1)+";");
 							bufferedWriter.write(list.get(2)+";");
@@ -194,8 +185,8 @@ public class RecordEditDialogController {
 		}
 		finally{
 
-			if(s != null){    				
-				s.close();
+			if(sc != null){    				
+				sc.close();
 				File file = new File(filename);
 				file.delete();
 				File newfile = new File("records.tmp");
@@ -204,7 +195,7 @@ public class RecordEditDialogController {
 		}
 	}
 
-	//Method to choose a image file and set the textfile to it's location
+	//Method to choose a image file and set the text to it's location
 	@FXML
 	private void browseAlbumCover(){
 		final FileChooser fileChooser = new FileChooser();
@@ -232,26 +223,19 @@ public class RecordEditDialogController {
 		String errorMessage = "";
 
 		if (albumField.getText() == null || albumField.getText().length() == 0) {
-			errorMessage += "No valid album name!\n"; 
+			errorMessage += "Not a valid album name!\n"; 
 		}
 		if (artistField.getText() == null || artistField.getText().length() == 0) {
-			errorMessage += "No valid artist name!\n"; 
+			errorMessage += "Not a valid artist name!\n"; 
 		}
 		if (recordLabelField.getText() == null || recordLabelField.getText().length() == 0) {
-			errorMessage += "No valid record label!\n"; 
+			errorMessage += "Not a valid record label!\n"; 
 		}
 
 		if (releaseYearField.getText() == null || releaseYearField.getText().length() == 0 || releaseYearField.getText().length() < 4
 				|| releaseYearField.getText().length() > 4) {
-			errorMessage += "No valid release year!\n"; 
-		} else {
-			// try to parse the release date into an int.
-			try {
-				Integer.parseInt(releaseYearField.getText());
-			} catch (NumberFormatException e) {
-				errorMessage += "No valid release year (must be an integer)!\n"; 
-			}
-		}
+			errorMessage += "Not a valid release year!\n"; 
+		} 
 
 		if (errorMessage.length() == 0) {
 			return true;

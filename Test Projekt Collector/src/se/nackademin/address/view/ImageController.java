@@ -13,9 +13,6 @@ public class ImageController {
 	private void initialize(){
 	}
 
-	public ImageController(){
-	}
-
 	public void setImage(Image img, Stage dialogStage){
 		enlargedImage.fitWidthProperty().bind(dialogStage.widthProperty());
 		enlargedImage.setImage(img);

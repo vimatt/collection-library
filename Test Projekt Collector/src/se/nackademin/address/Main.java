@@ -1,14 +1,11 @@
 package se.nackademin.address;
-import java.awt.image.ImageConsumer;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 import se.nackademin.address.model.VinylRecords;
-import se.nackademin.address.view.ImageController;
 import se.nackademin.address.view.RecordEditDialogController;
 import se.nackademin.address.view.VinylRecordController;
 import javafx.application.Application;
@@ -17,7 +14,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -29,7 +25,7 @@ public class Main extends Application {
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 	
-	//Create VinylRecord Data
+	//Create the list with vinyl record data
 	final ObservableList<VinylRecords> vinylRecordData = FXCollections.observableArrayList();
 
 	public Main(){
@@ -47,7 +43,8 @@ public class Main extends Application {
     				list.add(line);
     				cnt++;
                     if(cnt == 5){
-                    	vinylRecordData.add(new VinylRecords(list.get(0),list.get(1),list.get(2),list.get(3), list.get(4)));
+                    	vinylRecordData.add(new VinylRecords(list.get(0), list.get(1),
+                    										 list.get(2), list.get(3), list.get(4)));
                     	cnt = 0;
                     	list.clear();
                     }
@@ -67,16 +64,15 @@ public class Main extends Application {
         return vinylRecordData;
     }
 	
-	
 	@Override
 	public void start(Stage primaryStage) {
 
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Collection Application");	
 		this.primaryStage.getIcons().add(new Image("file:resources/images/file-manager.png"));
+//		this.primaryStage.getIcons().add(new Image(ClassLoader.getSystemResource("file-manager.png").toString()));
 				
 		initRootLayout();
-
 		showRecordOverview();	
 	}
 
@@ -89,7 +85,6 @@ public class Main extends Application {
 
 				//Show the scene containing the root layout
 				Scene scene = new Scene(rootLayout);
-//				scene.getStylesheets().add("se/nackademin/address/application.css");
 				primaryStage.setScene(scene);
 				primaryStage.show();
 
@@ -101,12 +96,12 @@ public class Main extends Application {
 
 	public void showRecordOverview(){
 		try {
-			//Load RecordOverview(NyMain)
+			//Load the RecordOverview
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(Main.class.getResource("view/VinylRecordOverview.fxml"));
 			TabPane recordOverview = (TabPane)loader.load();
 			
-			//Set record overview in the center of root layout
+			//Set RecordOverview in the center of root layout
 			rootLayout.setCenter(recordOverview);
 			
 			VinylRecordController controller = loader.getController();
@@ -129,11 +124,11 @@ public class Main extends Application {
 		// Create the dialog Stage.
 		Stage dialogStage = new Stage();
 		dialogStage.setTitle("Add Vinyl Record");
+		dialogStage.getIcons().add(new Image("file:resources/images/file-manager.png"));
 		dialogStage.initModality(Modality.WINDOW_MODAL);
 		dialogStage.setResizable(false);
         dialogStage.initOwner(primaryStage);
         Scene scene = new Scene(page);
-//        scene.getStylesheets().add("se/nackademin/address/application.css");
         dialogStage.setScene(scene);
         
         // Set the Record into the controller.
@@ -162,11 +157,11 @@ public class Main extends Application {
 		// Create the dialog Stage.
 		Stage dialogStage = new Stage();
 		dialogStage.setTitle("Edit Vinyl Record");
+		dialogStage.getIcons().add(new Image("file:resources/images/file-manager.png"));
 		dialogStage.initModality(Modality.WINDOW_MODAL);
         dialogStage.initOwner(primaryStage);
         dialogStage.setResizable(false);
         Scene scene = new Scene(page);
-//        scene.getStylesheets().add("se/nackademin/address/application.css");
         dialogStage.setScene(scene);
         
         // Set the Record into the controller.

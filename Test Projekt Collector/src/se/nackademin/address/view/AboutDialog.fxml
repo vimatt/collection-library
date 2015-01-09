@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="211.0" prefWidth="600.0" styleClass="background" stylesheets="@../application.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="se.nackademin.address.view.AboutDialogController">
+   <children>
+      <Button layoutX="476.0" layoutY="157.0" mnemonicParsing="false" onAction="#okClicked" prefHeight="40.0" prefWidth="110.0" text="OK" />
+      <Text layoutX="102.0" layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Collection Application for the everyday collector" />
+      <Text layoutX="102.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Version: 1.0" wrappingWidth="76.435546875" />
+      <Text layoutX="102.0" layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A Project created by Victor Mattsson Dravnieks" wrappingWidth="418.8125" />
+   </children>
+</AnchorPane>

@@ -8,20 +8,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
-
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialogs;
-
 import se.nackademin.address.Main;
 import se.nackademin.address.model.VinylRecords;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -30,8 +26,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -52,8 +46,6 @@ public class VinylRecordController {
 	public static String release = null;
 	//Define Table
 	@FXML TableView<VinylRecords> tableID;
-
-
 	@FXML TableColumn<VinylRecords, String> albumColumn;
 	@FXML TableColumn<VinylRecords, String> artistColumn;
 	@FXML TableColumn<VinylRecords, String> recordLabelColumn;
@@ -62,11 +54,9 @@ public class VinylRecordController {
 	//Define ImageView
 	@FXML private ImageView albumCover;
 
-
 	private Main main;
 
 	public VinylRecordController(){
-		
 	}
 
 	@FXML
@@ -94,17 +84,14 @@ public class VinylRecordController {
 					}
 				}
 			}
-
 		});
 	}
 
 
 	public void setMain(Main main){
 		this.main = main;
-
 		tableID.setItems(main.getVinylRecordData());
 	}
-
 
 	private void showVinylRecordDetails(VinylRecords vinylRecord){
 		if(vinylRecord != null){
@@ -129,7 +116,8 @@ public class VinylRecordController {
 	@FXML
 	private void handleDeleteRecord() throws IOException{
 		int selectedIndex = tableID.getSelectionModel().getSelectedIndex();
-		//If it's a valid selection we remove it and create a temporary file that we later rename and replace over the old file
+		//If it's a valid selection we remove it and create a temporary file that we later 
+		//rename and replace over the old file
 		if(selectedIndex >= 0){
 			if(confirmDelete()){
 				String filename = "records.txt";
@@ -234,7 +222,6 @@ public class VinylRecordController {
 		}
 	}
 
-
 	private boolean confirmDelete(){
 		boolean confirm = false;
 
@@ -261,8 +248,7 @@ public class VinylRecordController {
 			return;
 		VinylRecords rec = tableID.getItems().get(selectedIndex);
 		// Load the fxml file and create a new stage for the popup dialog.
-		if(!rec.getAlbumCoverString().equals("C:/aVictor/git/eget-projekt-oop/Test Projekt Collector/resources/images/default image.png")
-				&& !rec.getAlbumCoverString().equals("")){
+		if(rec.getAlbumCoverString() != null ){
 			
 			try{
 
@@ -272,15 +258,14 @@ public class VinylRecordController {
 
 				Stage dialogStage = new Stage();
 				dialogStage.setTitle(rec.getAlbum() + " - " + rec.getArtist());
-				dialogStage.initModality(Modality.WINDOW_MODAL);
+				dialogStage.getIcons().add(new Image("file:resources/images/file-manager.png"));
+				dialogStage.initModality(Modality.APPLICATION_MODAL);
 				dialogStage.setResizable(false);
 				dialogStage.setY(250);
 				dialogStage.setX(450);
 				Scene scene = new Scene(pane);
 				dialogStage.setScene(scene);
 				dialogStage.show();
-
-
 
 				String imgStr = rec.getAlbumCoverString();
 				Image img;
@@ -290,8 +275,6 @@ public class VinylRecordController {
 					img = new Image("file:///" + imgStr);
 				double imgH = img.getHeight();
 				double imgW = img.getWidth();
-				//todo sätt fönstret till bildens storlek sedan skicka med det till ImageControler som anpassar bilden
-				//efter fönstrets storlek
 				if(imgH > 600) imgH = 600;
 				else if(imgH < 300) imgH = 300;
 				dialogStage.setHeight(imgH + 30);

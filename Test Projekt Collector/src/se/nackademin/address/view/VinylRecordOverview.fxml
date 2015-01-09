@@ -138,7 +138,11 @@
                                        </font>
                                     </Label>
                                     <Button layoutX="303.0" layoutY="205.0" mnemonicParsing="false" onAction="#openWebpage" prefHeight="40.0" prefWidth="130.0" text="More Info" />
-                                    <Label layoutX="103.0" layoutY="294.0" text="Click to Enlarge" />
+                                    <Label layoutX="79.0" layoutY="295.0" text="Click Image to Enlarge">
+                                       <font>
+                                          <Font name="Arial" size="15.0" />
+                                       </font>
+                                    </Label>
                                  </children>
                               </AnchorPane>
                           </items>
