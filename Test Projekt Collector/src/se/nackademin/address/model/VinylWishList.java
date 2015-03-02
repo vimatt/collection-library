@@ -1,36 +1,26 @@
 package se.nackademin.address.model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.image.Image;
 
-public class VinylRecords {
+public class VinylWishList {
 
 
 	private final StringProperty album;
 	private final StringProperty artist;
 	private final StringProperty recordLabel;
 	private final StringProperty releaseYear;
-	private Image albumCover;
-	private String albumCoverString;
 
-	public VinylRecords(){
-		this(null, null, null,null, "");
+	public VinylWishList(){
+		this(null, null, null,null);
 	}
 
 
-	public VinylRecords(String sAlbum, String sArtist, String recordLabel, String releaseYear, String albumCover ){
+	public VinylWishList(String sAlbum, String sArtist, String recordLabel, String releaseYear){
 		this.album = new SimpleStringProperty(sAlbum);
 		this.artist = new SimpleStringProperty(sArtist);
 		this.recordLabel = new SimpleStringProperty(recordLabel);
 		this.releaseYear = new SimpleStringProperty(releaseYear);
-		if(!albumCover.equals("")){
-			this.albumCover = new Image("file:///" + albumCover.replace("file:///", ""));
-			this.albumCoverString = albumCover.replace("file:///", "");
-		}
-		else{
-			this.albumCover = new Image("file:///C:/aVictor/git/eget-projekt-oop/Test Projekt Collector/resources/images/default image.png");
-//			this.albumCoverString = "C:/aVictor/git/eget-projekt-oop/Test Projekt Collector/resources/images/default image.png";
-		}
+		
 	}
 
 	public String getAlbum(){
@@ -81,26 +71,5 @@ public class VinylRecords {
 		return releaseYear;
 	}
 
-	public Image getAlbumCover(){
-		return albumCover;		
-	}
-
-	public void setAlbumCover(String img){
-		if(!img.equals("")){
-			albumCoverString = img;
-			Image image = new Image("file:///" +img);
-			albumCover = image;
-		}
-		else {
-			Image image2 = new Image("file:///C:/aVictor/git/eget-projekt-oop/Test Projekt Collector/resources/images/default image.png");
-			albumCover = image2;
-		}
-	}
-	public void setAlbumCoverString(String string){
-		this.albumCoverString = string;
-	}
 	
-	public String getAlbumCoverString(){
-		return albumCoverString;
-	}
 }

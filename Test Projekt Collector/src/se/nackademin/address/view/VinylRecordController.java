@@ -1,19 +1,10 @@
 package se.nackademin.address.view;
 import java.awt.Desktop;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Scanner;
-import org.controlsfx.control.action.Action;
-import org.controlsfx.dialog.Dialog;
-import org.controlsfx.dialog.Dialogs;
-import se.nackademin.address.Main;
-import se.nackademin.address.model.VinylRecords;
+
+import javax.xml.stream.events.StartDocument;
+
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,12 +20,20 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.Dialogs;
+
+import se.nackademin.address.Main;
+import se.nackademin.address.model.VinylRecords;
+import se.nackademin.address.model.VinylWishList;
+
 
 @SuppressWarnings("deprecation")
 public class VinylRecordController {
 
 
-	//Define TextFields
+	//Define Labels
 	@FXML private Label albumLabel;
 	@FXML private Label artistLabel;
 	@FXML private Label recordLabelLabel;
@@ -50,10 +49,16 @@ public class VinylRecordController {
 	@FXML TableColumn<VinylRecords, String> artistColumn;
 	@FXML TableColumn<VinylRecords, String> recordLabelColumn;
 	@FXML TableColumn<VinylRecords, String> releaseYearColumn;
-
+	//Table for Wishlist
+	@FXML TableView<VinylWishList> wl_tableID;
+	@FXML TableColumn<VinylWishList, String> wl_albumColumn;
+	@FXML TableColumn<VinylWishList, String> wl_artistColumn;
+	@FXML TableColumn<VinylWishList, String> wl_recordLabelColumn;
+	@FXML TableColumn<VinylWishList, String> wl_releaseYearColumn;
 	//Define ImageView
 	@FXML private ImageView albumCover;
 
+	private DatabaseController dbController = new DatabaseController();
 	private Main main;
 
 	public VinylRecordController(){
@@ -61,19 +66,23 @@ public class VinylRecordController {
 
 	@FXML
 	public void initialize() {
-		
+
 		albumColumn.setCellValueFactory(cellData -> cellData.getValue().albumProperty());
 		artistColumn.setCellValueFactory(cellData -> cellData.getValue().artistProperty());
 		recordLabelColumn.setCellValueFactory(cellData -> cellData.getValue().recordLabelProperty());
 		releaseYearColumn.setCellValueFactory(cellData -> cellData.getValue().releaseYearProperty());
 
+		wl_albumColumn.setCellValueFactory(cellData -> cellData.getValue().albumProperty());
+		wl_artistColumn.setCellValueFactory(cellData -> cellData.getValue().artistProperty());
+		wl_recordLabelColumn.setCellValueFactory(cellData -> cellData.getValue().recordLabelProperty());
+		wl_releaseYearColumn.setCellValueFactory(cellData -> cellData.getValue().releaseYearProperty());
+
 		//Clear record Details
 		showVinylRecordDetails(null);
-		
+
 		//Listen for selection changes and  show the record details when changed
 		tableID.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) 
 				-> showVinylRecordDetails(newValue));
-
 
 		tableID.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -85,12 +94,24 @@ public class VinylRecordController {
 				}
 			}
 		});
-	}
 
+		wl_tableID.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if(event.getButton().equals(MouseButton.PRIMARY)){
+					if(event.getClickCount() == 2){
+						handleEditWishList();
+					}
+				}
+			}
+		});
+
+	}
 
 	public void setMain(Main main){
 		this.main = main;
 		tableID.setItems(main.getVinylRecordData());
+		wl_tableID.setItems(main.getVinylWishListData());
 	}
 
 	private void showVinylRecordDetails(VinylRecords vinylRecord){
@@ -115,68 +136,18 @@ public class VinylRecordController {
 
 	@FXML
 	private void handleDeleteRecord() throws IOException{
+
 		int selectedIndex = tableID.getSelectionModel().getSelectedIndex();
-		//If it's a valid selection we remove it and create a temporary file that we later 
-		//rename and replace over the old file
 		if(selectedIndex >= 0){
 			if(confirmDelete()){
-				String filename = "records.txt";
-				Scanner s = null;
-				try{
-					s =  new Scanner(new BufferedReader(new FileReader(filename)));
-					s.useDelimiter(";");
-					String line;
-					ArrayList<String>list = new ArrayList<String>();
-					int cnt = 0;
-					String fileName = "records.tmp";
+				VinylRecords v = tableID.getItems().get(selectedIndex);
+				String album = v.getAlbum();
+				String artist = v.getArtist();
 
-					FileWriter fileWriter = new FileWriter(fileName);
-					BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-					while(s.hasNext()){
-						line = s.next();
-						list.add(line);
-						cnt++;
-						if(cnt == 5){
-							VinylRecords v = tableID.getItems().get(selectedIndex);
-							if(list.get(0).equals(v.getAlbum()) && list.get(1).equals(v.getArtist()) 
-									&& list.get(2).equals(v.getRecordLabel()) && list.get(3).equals(v.getReleaseYear()) 
-									&& list.get(4).equals("file:///" + v.getAlbumCoverString()) || list.get(4).equals("")){
-
-							} else {
-
-								try {
-									// Always wrap FileWriter in BufferedWriter.                          	            
-									bufferedWriter.write(list.get(0)+";");
-									bufferedWriter.write(list.get(1)+";");
-									bufferedWriter.write(list.get(2)+";");
-									bufferedWriter.write(list.get(3)+";");
-									bufferedWriter.write(list.get(4)+";");
-
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-							}
-							cnt = 0;
-							list.clear();
-						}             
-					}
-					bufferedWriter.close();			
-				}
-				finally{
-
-					if(s != null){    				
-						s.close();
-						File file = new File(filename);
-						file.delete();
-						File newfile = new File("records.tmp");
-						newfile.renameTo(new File("records.txt"));
-					}
-				}
-
+				dbController.deleteVinylFromDatabase(album, artist);
 				tableID.getItems().remove(selectedIndex);
 			}
 		}
-		//If it's not a valid selection, i.e it's under 0 we show an error message
 		else{
 			Dialogs.create()
 			.title("No selection")
@@ -184,7 +155,6 @@ public class VinylRecordController {
 			.message("Please selecet an object in the table")
 			.showWarning();
 		}
-
 	}
 
 	@FXML
@@ -249,7 +219,7 @@ public class VinylRecordController {
 		VinylRecords rec = tableID.getItems().get(selectedIndex);
 		// Load the fxml file and create a new stage for the popup dialog.
 		if(rec.getAlbumCoverString() != null ){
-			
+
 			try{
 
 				FXMLLoader loader = new FXMLLoader();
@@ -290,5 +260,61 @@ public class VinylRecordController {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/*START OF WISHLIST METHODS*/
+
+
+	@FXML
+	private void handleDeleteWishList() throws IOException{
+		int selectedIndex = wl_tableID.getSelectionModel().getSelectedIndex();
+		if(selectedIndex >= 0){
+			if(confirmDeleteWL()){
+				wl_tableID.getItems().remove(selectedIndex);
+			}
+		}
+		//If it's not a valid selection, i.e it's under 0 we show an error message
+		else{
+			Dialogs.create()
+			.title("No selection")
+			.masthead("No object selected")
+			.message("Please selecet an object in the table")
+			.showWarning();
+		}
+	}
+
+	@FXML
+	private void handleNewWish() {
+		VinylWishList tempRecord = new VinylWishList();
+		boolean okClicked = main.showRecordAddWLDialog(tempRecord);
+		if (okClicked) {
+			main.getVinylWishListData().add(tempRecord);
+		}
+	}
+
+	@FXML
+	private void handleEditWishList() {
+		VinylWishList selectedRecord = wl_tableID.getSelectionModel().getSelectedItem();
+		if (selectedRecord != null) {
+			main.showWishListEditDialog(selectedRecord);
+		}
+	}
+
+	private boolean confirmDeleteWL(){
+		boolean confirm = false;
+
+		Action response = Dialogs.create()
+				.title("Confirm Dialog")
+				.masthead("Delete Confirmation")
+				.message("Are you sure you want to delete this entry?")
+				.actions(Dialog.ACTION_YES, Dialog.ACTION_NO)
+				.showConfirm();
+
+		if (response == Dialog.ACTION_YES) {
+			confirm = true;
+		} else {
+			confirm = false;
+		}
+		return confirm;
 	}
 }

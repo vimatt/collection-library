@@ -1,13 +1,8 @@
 package se.nackademin.address.view;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -18,6 +13,7 @@ import org.controlsfx.dialog.Dialogs;
 
 import se.nackademin.address.model.VinylRecords;
 @SuppressWarnings("deprecation")
+
 
 public class RecordEditDialogController {
 
@@ -32,10 +28,10 @@ public class RecordEditDialogController {
 	private Stage dialogStage;
 	private VinylRecords vinylRecord;
 	private boolean okClicked = false;
+	private DatabaseController dbController = new DatabaseController();
 
 	@FXML
 	private void initialize() {
-		
 	}
 
 	//Sets the stage of the dialog
@@ -52,7 +48,6 @@ public class RecordEditDialogController {
 		recordLabelField.setText(vinylRecord.getRecordLabel());
 		releaseYearField.setText(vinylRecord.getReleaseYear());       
 		albumCoverField.setText(vinylRecord.getAlbumCoverString());
-		
 	}
 
 	//Returns true if the user clicked OK, false otherwise.	   
@@ -63,135 +58,61 @@ public class RecordEditDialogController {
 	//called when the user clicks ok.	     
 	@FXML
 	private void handleOk() {
-		String fileName = "records.txt";
-		FileWriter fileWriter = null;
-		try {
-			fileWriter = new FileWriter(fileName,true);
-			
-			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-			if(isInputValid()){
-				bufferedWriter.write(albumField.getText() + ";");
-				bufferedWriter.write(artistField.getText() + ";");
-				bufferedWriter.write(recordLabelField.getText() + ";");
-				bufferedWriter.write(releaseYearField.getText() + ";");
-				if(albumCoverField.getText() != null){
-					bufferedWriter.write("file:///" + albumCoverField.getText().replace("\\", "/") + ";");
-				}
-				else{
-					bufferedWriter.write(";");
-				}
-				bufferedWriter.close();
+		if(isInputValid()){
+			String album = albumField.getText();
+			String artist = artistField.getText();
+			String record = recordLabelField.getText();
+			String release = releaseYearField.getText();
+			String cover = albumCoverField.getText();
 
-				vinylRecord.setAlbum(albumField.getText());
-				vinylRecord.setArtist(artistField.getText());
-				vinylRecord.setRecordLabel(recordLabelField.getText());
-				vinylRecord.setReleaseYear(releaseYearField.getText());
-				if(albumCoverField.getText() != null){
-					vinylRecord.setAlbumCover(albumCoverField.getText().replace("\\", "/"));
-				}
-				else{
-					vinylRecord.setAlbumCover("");
-				}
-
-				okClicked = true;
-				dialogStage.close();
+			vinylRecord.setAlbum(album);
+			vinylRecord.setArtist(artist);
+			vinylRecord.setRecordLabel(record);
+			vinylRecord.setReleaseYear(release);
+			if(cover != null){
+				vinylRecord.setAlbumCover(cover.replace("\\", "/"));
+				cover = cover.replace("\\", "/");
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			else{
+				vinylRecord.setAlbumCover("");
+				cover = "";
+			}
+
+			dbController.addVinylToDatabase(album, artist, record, release, cover);
+
+			okClicked = true;
+			dialogStage.close();	
 		}
 	}
 
 	@FXML
 	private void handleOkEdit() throws IOException {
-		
-		//Save the fields in temporary variables
-		String tempAlbum = albumField.getText();
-		String tempArtist = artistField.getText();
-		String tempRecord = recordLabelField.getText();
-		String tempRelease = releaseYearField.getText();
-		String tempCover = albumCoverField.getText();
-		String filename = "records.txt";
-		Scanner sc = null;
-		try{
-			sc =  new Scanner(new BufferedReader(new FileReader(filename)));
-			sc.useDelimiter(";");
-			String line;
-			ArrayList<String>list = new ArrayList<String>();
-			int cnt = 0;
-			String fileName = "records.tmp";
+		if(isInputValid()){
+			String oldAlbum = vinylRecord.getAlbum();
+			String oldArtist = vinylRecord.getArtist();
+			String album = albumField.getText();
+			String artist = artistField.getText();
+			String rLabel = recordLabelField.getText();
+			String release = releaseYearField.getText();
+			String cover = albumCoverField.getText();
 
-			FileWriter fileWriter = new FileWriter(fileName);
-			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-			while(sc.hasNext()){
-				line = sc.next();
-				list.add(line);
-				cnt++;
-				if(cnt == 5){
-					if(list.get(0).equals(VinylRecordController.album) && list.get(1).equals(VinylRecordController.artist) 
-							&& list.get(2).equals(VinylRecordController.recordlabel) && list.get(3).equals(VinylRecordController.release)
-							&& (list.get(4).equals("file:///" + vinylRecord.getAlbumCoverString())  || list.get(4).equals(""))){
-						try {
-							//Save the temporary variables over the old text      
-							if(isInputValid()){
-								bufferedWriter.write(tempAlbum+";");
-								bufferedWriter.write(tempArtist+";");
-								bufferedWriter.write(tempRecord+";");
-								bufferedWriter.write(tempRelease+";");
-								if(tempCover.equals(""))
-									bufferedWriter.write(";");
-								else
-									bufferedWriter.write("file:///" + tempCover.replace("\\", "/") + ";");
-
-								vinylRecord.setAlbum(albumField.getText());
-								vinylRecord.setArtist(artistField.getText());
-								vinylRecord.setRecordLabel(recordLabelField.getText());
-								vinylRecord.setReleaseYear(releaseYearField.getText());
-								vinylRecord.setAlbumCover(albumCoverField.getText().replace("\\", "/"));
-
-								okClicked = true;
-								dialogStage.close();
-							}
-							//Temporary solution for the isvalid problem
-							else{
-								bufferedWriter.write(list.get(0)+";");
-								bufferedWriter.write(list.get(1)+";");
-								bufferedWriter.write(list.get(2)+";");
-								bufferedWriter.write(list.get(3)+";");
-								bufferedWriter.write(list.get(4)+";");
-								dialogStage.close();
-							}
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-
-					} else {
-
-						try {
-							bufferedWriter.write(list.get(0)+";");
-							bufferedWriter.write(list.get(1)+";");
-							bufferedWriter.write(list.get(2)+";");
-							bufferedWriter.write(list.get(3)+";");
-							bufferedWriter.write(list.get(4)+";");
-
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-					cnt = 0;
-					list.clear();
-				}             
+			vinylRecord.setAlbum(albumField.getText());
+			vinylRecord.setArtist(artistField.getText());
+			vinylRecord.setRecordLabel(recordLabelField.getText());
+			vinylRecord.setReleaseYear(releaseYearField.getText());
+			if(albumCoverField.getText() != null){
+				vinylRecord.setAlbumCover(cover.replace("\\", "/"));
+				cover = cover.replace("\\", "/");
 			}
-			bufferedWriter.close();			
-		}
-		finally{
-
-			if(sc != null){    				
-				sc.close();
-				File file = new File(filename);
-				file.delete();
-				File newfile = new File("records.tmp");
-				newfile.renameTo(new File("records.txt"));
+			else{
+				vinylRecord.setAlbumCover("");
+				cover = "";
 			}
+
+			dbController.updateVinylToDatabase(album, artist, rLabel, release, cover, oldAlbum, oldArtist);
+
+			okClicked = true;
+			dialogStage.close();
 		}
 	}
 
@@ -249,10 +170,10 @@ public class RecordEditDialogController {
 			return false;
 		}
 	}
-	
+
 	@FXML
 	private void clearBrowse(){
-		albumCoverField.clear();
+		albumCoverField.setText("");
 	}
 }
 
