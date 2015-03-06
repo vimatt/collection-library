@@ -19,6 +19,7 @@ public class DatabaseController {
 		}
 	}
 
+
 	public void addVinylToDatabase(String album, String artist, String rLabel, String releaseYear, String albumCover){
 		try (
 				PreparedStatement stm = conn.prepareStatement("INSERT INTO vinyl_record (album, artist, label, release_year, album_cover)" +

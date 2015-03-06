@@ -28,7 +28,6 @@ public class Main extends Application {
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 
-	//Create the list with vinyl record data
 	final ObservableList<VinylRecords> vinylRecordData = FXCollections.observableArrayList();
 	final ObservableList<VinylWishList> wishListData = FXCollections.observableArrayList();
 
