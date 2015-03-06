@@ -38,7 +38,7 @@ public class Main extends Application {
 		ResultSet rs = null;
 
 		try(
-				Connection conn = DriverManager.getConnection("jdbc:SQLite:C:/aVictor/git/eget-projekt-oop/Test Projekt Collector/db/collectionDB.db");
+				Connection conn = DriverManager.getConnection("jdbc:SQLite:db/collectionDB.db");
 				Statement stm = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY); 
 				Statement stm2 = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 				) {

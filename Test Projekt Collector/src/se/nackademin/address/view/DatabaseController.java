@@ -13,7 +13,7 @@ public class DatabaseController {
 
 	public DatabaseController(){
 		try {
-			conn = DriverManager.getConnection("jdbc:SQLite:C:/aVictor/git/eget-projekt-oop/Test Projekt Collector/db/collectionDB.db");
+			conn = DriverManager.getConnection("jdbc:SQLite:db/collectionDB.db");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
