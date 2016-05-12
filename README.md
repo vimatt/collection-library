@@ -1,3 +1,3 @@
 # README #
 
-Ett projektarbete i kursen Objektorienterad Programering Java på utbildningen Programutvecklare Java, Nackademin.
+A project in the course object-oriented programming Java at the education Java developer, Nackademin.
